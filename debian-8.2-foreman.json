@@ -206,7 +206,7 @@
     },
     {
       "type": "file",
-      "source": "answers.yaml",
+      "source": "data/answers.yaml",
       "destination": "/tmp/answers.yaml"
     },
     {

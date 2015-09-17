@@ -3,6 +3,8 @@ all: help
 help:
 	@echo ""
 	@echo "-- Help Menu"
+	@echo "   Usage:"
+	@echo "   make {vagrant|qemu}[debug]"
 	@echo ""
 
 qemu: buildqemu beep
