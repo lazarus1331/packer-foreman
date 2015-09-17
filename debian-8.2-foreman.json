@@ -6,7 +6,7 @@
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "ssh_port": "22",
-    "headless": "false",
+    "headless": "true",
     "vm_name": "packer-debian-foreman",
     "memory": "768",
     "cpu": "1"
@@ -47,7 +47,7 @@
       "shutdown_command": "echo {{user `ssh_password`}}|sudo -S /sbin/shutdown -hP now",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
-      "output_directory": "./builds/vagrant",
+      "output_directory": "./builds/virtualbox-iso",
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "{{user `cpu`}}" ]
@@ -172,13 +172,6 @@
     }
 
   ],
-  "post-processors": [
-    {
-      "type": "vagrant",
-      "only": ["virtualbox-iso"],
-      "output": "./builds/vagrant/{{user `vm_name`}}.box"
-    }
-  ],
   "provisioners": [
     {
       "type": "shell",
@@ -223,6 +216,13 @@
       "scripts": [
         "scripts/debian/install-foreman.sh"
       ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "only": ["virtualbox-iso"],
+      "output": "./builds/vagrant/{{user `vm_name`}}.box"
     }
   ]
 }
