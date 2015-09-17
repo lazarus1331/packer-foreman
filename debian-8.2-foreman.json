@@ -1,0 +1,228 @@
+{
+  "variables": {
+    "packer-debian_version": "8.2.0",
+    "mirror": "http://cdimage.debian.org/debian-cd",
+    "foreman_version": "1.9",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_port": "22",
+    "headless": "false",
+    "vm_name": "packer-debian-foreman",
+    "memory": "768",
+    "cpu": "1"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "install ",
+        "debian-installer=en_US ",
+        "locale=en_US ",
+        "kbd-chooser/method=us ",
+        "keyboard-configuration/xkb-keymap=us ",
+        "netcfg/get_hostname={{ .Name }} ",
+        "netcfg/get_domain=vagrantup.com ",
+        "fb=false ",
+        "debconf/frontend=noninteractive ",
+        "console-setup/ask_detect=false ",
+        "console-keymaps-at/keymap=us ",
+        "auto ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-8/preseed.cfg ",
+        "<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": 5960,
+      "guest_os_type": "Debian_64",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "iso_checksum": "bc86e10cba7b47449592bda6f79f1896d63e269d",
+      "iso_checksum_type": "sha1",
+      "iso_url": "{{user `mirror`}}/8.2.0/amd64/iso-cd/debian-8.2.0-amd64-CD-1.iso",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_port": "{{user `ssh_port`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo {{user `ssh_password`}}|sudo -S /sbin/shutdown -hP now",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "output_directory": "./builds/vagrant",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `cpu`}}" ]
+      ]
+    },
+    {
+      "type": "qemu",
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-8/preseed.cfg <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "kbd-chooser/method=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=vagrantup.com <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": 5960,
+      "accelerator": "kvm",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "iso_checksum": "bc86e10cba7b47449592bda6f79f1896d63e269d",
+      "iso_checksum_type": "sha1",
+      "iso_url": "{{user `mirror`}}/8.2.0/amd64/iso-cd/debian-8.2.0-amd64-CD-1.iso",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_port": "{{user `ssh_port`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo {{user `ssh_password`}}|sudo -S /sbin/shutdown -hP now",
+      "output_directory": "./builds/qemu"
+    },
+    {
+      "type": "vmware-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-8/preseed.cfg <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "kbd-chooser/method=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=vagrantup.com <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": 5960,
+      "guest_os_type": "debian5",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "iso_checksum": "bc86e10cba7b47449592bda6f79f1896d63e269d",
+      "iso_checksum_type": "sha1",
+      "iso_url": "{{user `mirror`}}/8.2.0/amd64/iso-cd/debian-8.2.0-amd64-CD-1.iso",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_port": "{{user `ssh_port`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo {{user `ssh_password`}}|sudo -S /sbin/shutdown -hP now",
+      "tools_upload_flavor": "linux",
+      "output_directory": "./builds/vmware",
+      "vmx_data": {
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpu`}}",
+        "cpuid.coresPerSocket": "1"
+      }
+    },
+    {
+      "type": "parallels-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-8/preseed.cfg <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "kbd-chooser/method=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=vagrantup.com <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": 5960,
+      "guest_os_type": "debian",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "iso_checksum": "bc86e10cba7b47449592bda6f79f1896d63e269d",
+      "iso_checksum_type": "sha1",
+      "iso_url": "{{user `mirror`}}/8.2.0/amd64/iso-cd/debian-8.2.0-amd64-CD-1.iso",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_port": "{{user `ssh_port`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo {{user `ssh_password`}}|sudo -S /sbin/shutdown -hP now",
+      "parallels_tools_flavor": "lin",
+      "prlctl_version_file": ".prlctl_version",
+      "output_directory": "./builds/parallels",
+      "prlctl": [
+        [ "set", "{{.Name}}", "--memsize", "{{user `memory`}}" ],
+        [ "set", "{{.Name}}", "--cpus", "{{user `cpu`}}" ]
+      ]
+    }
+
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "only": ["virtualbox-iso"],
+      "output": "./builds/vagrant/{{user `vm_name`}}.box"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [ "PACKER_DEBIAN_VERSION={{user `packer-debian_version`}}",
+                            "FOREMAN_VERSION={{user `foreman_version`}}"
+      ],
+      "execute_command": "echo {{user `ssh_password`}}| {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/debian/update.sh",
+        "scripts/common/sshd.sh",
+        "scripts/debian/networking.sh",
+        "scripts/debian/sudoers.sh",
+        "scripts/common/vmtools.sh",
+        "scripts/debian/foreman.sh",
+        "scripts/debian/cleanup.sh"
+      ],
+      "override": {
+          "virtualbox-iso": {
+              "execute_command": "echo {{user `ssh_password`}}| {{.Vars}} sudo -E -S bash '{{.Path}}'",
+              "scripts": [
+                "scripts/debian/update.sh",
+                "scripts/common/sshd.sh",
+                "scripts/debian/networking.sh",
+                "scripts/debian/sudoers.sh",
+                "scripts/common/vagrant.sh",
+                "scripts/common/vmtools.sh",
+                "scripts/debian/foreman.sh",
+                "scripts/debian/cleanup.sh"
+              ]
+        }
+      }
+    },
+    {
+      "type": "file",
+      "source": "answers.yaml",
+      "destination": "/tmp/answers.yaml"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [ "FOREMAN_VERSION={{user `foreman_version`}}" ],
+      "execute_command": "echo {{user `ssh_password`}}| {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/debian/install-foreman.sh"
+      ]
+    }
+  ]
+}
