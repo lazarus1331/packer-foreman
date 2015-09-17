@@ -3,4 +3,4 @@ echo "deb http://deb.theforeman.org/ jessie $FOREMAN_VERSION" > /etc/apt/sources
 echo "deb http://deb.theforeman.org/ plugins $FOREMAN_VERSION" >> /etc/apt/sources.list.d/foreman.list
 wget -q http://deb.theforeman.org/pubkey.gpg -O- | apt-key add -
 apt-get update
-apt-get install -y foreman-installer
+apt-get install -y apache2 tftpd bind9 isc-dhcp-server foreman-installer
