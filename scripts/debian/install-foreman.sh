@@ -1,4 +1,4 @@
 #!/bin/bash -eux
 mkdir -p /etc/foreman
 cp /tmp/answers.yaml /etc/foreman/answers.yaml
-foreman-installer -v
+foreman-installer -v | tee /root/foreman-install.log
